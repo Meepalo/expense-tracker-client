@@ -26,7 +26,7 @@ const monthNames = [
 	"December",
 ];
 
-const yearUrl = `/api/expenses`;
+const yearUrl = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
 const YearlyOverview = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
