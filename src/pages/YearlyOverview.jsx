@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import MainContainer from "../components/MainContainer";
 import TotalExpense from "../components/TotalExpense";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 const monthNames = [
 	"January",
@@ -25,21 +26,22 @@ const monthNames = [
 	"December",
 ];
 
-const yearUrl = `${process.env.REACT_APP_API_URL}/api/expenses/2021`;
+const yearUrl = `/api/expenses`;
 
 const YearlyOverview = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [selectedYear, setSelectedYear] = useState(0);
+	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 	const [yearlyTotal, setYearlyTotal] = useState(null);
 	const [monhtlyTotals, setMonthlyTotals] = useState(
 		monthNames.map((name) => 0)
 	);
+	const [isDataFetching, setIsDataFetching] = useState(true);
 
 	const navigate = useNavigate();
 
-	useEffect(async () => {
-		console.log("Fetching from: " + yearUrl);
-		const res = await fetch(yearUrl, {
+	async function fetchData() {
+		setIsDataFetching(true);
+		const res = await fetch(`${yearUrl}/${selectedYear}`, {
 			headers: {
 				"Content-Type": "application/json",
 				"x-access-token": localStorage.getItem("token"),
@@ -51,16 +53,27 @@ const YearlyOverview = () => {
 
 		if (expensesResponse.status == "OK") {
 			console.log(expensesResponse);
+			console.log("fetched");
 			setYearlyTotal(expensesResponse.total);
 			setMonthlyTotals(expensesResponse.expenses);
+			setIsDataFetching(false);
 		} else {
 			console.log(expensesResponse);
 		}
+	}
+
+	useEffect(async () => {
+		console.log("Fetching from: " + yearUrl);
+		await fetchData();
 	}, []);
 
-	useEffect(() => {
+	useEffect(async () => {
 		setSelectedYear(selectedDate.getFullYear());
 	}, [selectedDate]);
+
+	useEffect(async () => {
+		await fetchData();
+	}, [selectedYear]);
 
 	const CustomYearInput = forwardRef(({ value, onClick }, ref) => (
 		<button css={customYearInputCSS} onClick={onClick} ref={ref}>
@@ -96,15 +109,19 @@ const YearlyOverview = () => {
 					dateFormat="yyyy"
 					customInput={<CustomYearInput />}
 				/>
-				<ExpensesLayout>
-					<TotalExpense
-						css={css`
-							grid-column: 1 / span 2;
-						`}
-						value={yearlyTotal}
-					/>
-					{monhtlyOverviews}
-				</ExpensesLayout>
+				{isDataFetching ? (
+					<LoadingAnimation />
+				) : (
+					<ExpensesLayout>
+						<TotalExpense
+							css={css`
+								grid-column: 1 / span 2;
+							`}
+							value={yearlyTotal}
+						/>
+						{monhtlyOverviews}
+					</ExpensesLayout>
+				)}
 			</MainContainer>
 		</>
 	);
@@ -115,7 +132,6 @@ const customYearInputCSS = css`
 	border-radius: 100px;
 	font-size: 1.4rem;
 	font-weight: 900;
-	transform: translateX(-15px);
 	width: fit-content;
 	background: var(--col-primary);
 	margin: 10px 0;
@@ -143,3 +159,7 @@ const MonthlyExpense = styled.div`
 `;
 
 export default YearlyOverview;
+
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
