@@ -35,6 +35,8 @@ const MonhtlyOverview = ({ user }) => {
 
 	const [monthlyTotal, setMonthlyTotal] = useState(0);
 	const [expenses, setExpenses] = useState([]);
+	const [matkoExpenseTotal, setMatkoExpenseTotal] = useState(0);
+	const [toniExpenseTotal, setToniExpenseTotal] = useState(0);
 
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [previewDialogVisible, setPreviewDialogVisible] = useState(false);
@@ -79,6 +81,19 @@ const MonhtlyOverview = ({ user }) => {
 			console.log(expensesResult);
 		}
 	};
+
+	useEffect(() => {
+		let matkoTotal = expenses
+			.filter((expense) => expense.user == "Matko")
+			.reduce((acc, expense) => acc + expense.amount, 0);
+
+		let toniTotal = expenses
+			.filter((expense) => expense.user == "Toni")
+			.reduce((acc, expense) => acc + expense.amount, 0);
+
+		setMatkoExpenseTotal(matkoTotal);
+		setToniExpenseTotal(toniTotal);
+	}, [expenses]);
 
 	const getPreviousMonth = () => {
 		const pMonth = parseInt(month) - 1;
@@ -205,6 +220,14 @@ const MonhtlyOverview = ({ user }) => {
 		</ExpenseItem>
 	));
 
+	const printDebt = () => {
+		let payedLess = matkoExpenseTotal < toniExpenseTotal ? "Matko" : "Toni";
+		let payedMore = payedLess == "Matko" ? "Toni" : "Matko";
+		let difference = Math.abs(matkoExpenseTotal - toniExpenseTotal);
+
+		return `${payedLess} owes ${payedMore} ${difference} kn`;
+	};
+
 	return (
 		<>
 			<MainContainer>
@@ -235,6 +258,18 @@ const MonhtlyOverview = ({ user }) => {
 					{monthNames[month]} {year} expenses
 				</h1>
 				<TotalExpense value={monthlyTotal} />
+
+				<UserTotal>
+					<span className="user">Matko:</span>
+					{matkoExpenseTotal} kn
+				</UserTotal>
+
+				<UserTotal>
+					<span>Toni:</span>
+					{toniExpenseTotal} kn
+				</UserTotal>
+
+				<ExpenseDifference>{printDebt()}</ExpenseDifference>
 
 				<ExpensesContainer>
 					{listedExpenses.length > 0 ? (
@@ -288,6 +323,22 @@ const ContainerHeader = styled.header`
 		display: flex;
 		column-gap: 30px;
 	}
+`;
+
+const UserTotal = styled.p`
+	margin: 10px 0;
+
+	span {
+		margin-right: 16px;
+	}
+
+	&:not(.user) {
+		font-weight: bold;
+	}
+`;
+
+const ExpenseDifference = styled.p`
+	margin: 10px 0;
 `;
 
 const ExpensesContainer = styled.main`
