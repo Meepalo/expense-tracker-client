@@ -49,6 +49,11 @@ const Main = styled.main`
 	@media (max-width: 780px) {
 		width: 100%;
 	}
+
+	@media (max-width: 420px) {
+		border-radius: 15px;
+		padding: 40px 8px 80px 8px;
+	}
 `;
 
 export default MainContainer;

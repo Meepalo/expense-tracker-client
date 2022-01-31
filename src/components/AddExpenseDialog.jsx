@@ -9,7 +9,7 @@ import FormGroup from "./styled/FormGroup";
 
 const url = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
-const AddExpenseDialog = ({ visible, onDismiss }) => {
+const AddExpenseDialog = ({ visible, onConfirm, onDismiss }) => {
 	const [expenseDate, setExpenseDate] = useState(Date.now());
 	const [expenseAmount, setExpenseAmount] = useState(0);
 	const [expenseDescription, setExpenseDescription] = useState("");
@@ -46,7 +46,7 @@ const AddExpenseDialog = ({ visible, onDismiss }) => {
 			console.log("Error: " + result.error);
 		}
 
-		onDismiss();
+		onConfirm();
 	};
 
 	if (!visible) return null;
@@ -131,8 +131,8 @@ const Overlay = styled.div`
 	place-items: center;
 	background: rgba(0, 0, 0, 0.4);
 	backdrop-filter: blur(20px);
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	top: 0;
 	left: 0;
 	z-index: var(--popup-z-index);
@@ -152,6 +152,18 @@ const Dialog = styled.div`
 
 	.form-main {
 		padding-right: 260px;
+	}
+
+	@media (max-width: 420px) {
+		border-radius: 15px;
+
+		.form-main {
+			padding-right: 0px;
+
+			input {
+				width: 100%;
+			}
+		}
 	}
 `;
 

@@ -16,12 +16,16 @@ import MonhtlyOverview from "./pages/MonthlyOverview";
 import YearlyOverview from "./pages/YearlyOverview";
 import Login from "./pages/Login";
 import { ContentWrapper } from "./components/styled/ContentWrapper";
+import Alert from "./components/Alert";
 
 const loginUrl = `${process.env.REACT_APP_API_URL}/api/login`;
 
 function App() {
 	const [userLoggedIn, setUserLoggedIn] = useState(null);
 	const [userEmail, setUserEmail] = useState(null);
+
+	const [alertVisible, setAlertVisible] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -64,9 +68,18 @@ function App() {
 		setUserEmail(null);
 	};
 
+	const showAlert = (message) => {
+		setAlertMessage(message);
+		setAlertVisible(true);
+	};
+
 	return userLoggedIn == null ? null : (
 		<PageWrapper>
-			<Appbar onLogout={logoutUser} />
+			<Appbar
+				onLogout={logoutUser}
+				onExpenseAdded={() => showAlert("Expense added successfully")}
+			/>
+			<button onClick={() => showAlert("My message")}>Show alert</button>
 			<ScrollToTop />
 			<ContentWrapper>
 				<Routes>
@@ -77,7 +90,14 @@ function App() {
 					>
 						<Route
 							path="/monthly"
-							element={<MonhtlyOverview user={userEmail} />}
+							element={
+								<MonhtlyOverview
+									user={userEmail}
+									onExpenseDeleted={() =>
+										showAlert("Expense deleted successfully")
+									}
+								/>
+							}
 						/>
 						<Route path="/" element={<YearlyOverview />} />
 					</Route>
@@ -90,6 +110,12 @@ function App() {
 					</Route>
 				</Routes>
 			</ContentWrapper>
+			<Alert
+				visible={alertVisible}
+				message={alertMessage}
+				onShow={() => setAlertVisible(false)}
+				onTimeout={() => setAlertVisible(false)}
+			/>
 		</PageWrapper>
 	);
 }

@@ -6,7 +6,7 @@ import AddExpenseDialog from "./AddExpenseDialog";
 
 import { PrimaryButton } from "./styled/CustomButtons";
 
-const Appbar = ({ onLogout }) => {
+const Appbar = ({ onLogout, onExpenseAdded }) => {
 	const [addExpenseDialogVisible, setAddExpenseDialogVisible] = useState(false);
 
 	return (
@@ -21,6 +21,7 @@ const Appbar = ({ onLogout }) => {
 				visible={addExpenseDialogVisible}
 				onConfirm={() => {
 					setAddExpenseDialogVisible(false);
+					onExpenseAdded();
 				}}
 				onDismiss={() => {
 					setAddExpenseDialogVisible(false);

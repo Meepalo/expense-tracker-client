@@ -29,7 +29,7 @@ const monthNames = [
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
-const MonhtlyOverview = ({ user }) => {
+const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 	const [month, setMonth] = useState(null);
 	const [year, setYear] = useState(null);
 
@@ -107,6 +107,26 @@ const MonhtlyOverview = ({ user }) => {
 		return nMonth;
 	};
 
+	const getPreviousMonthUrl = () => {
+		let pMonth = parseInt(month) - 1;
+		let pYear = parseInt(year);
+		if (pMonth < 0) {
+			pMonth = 11;
+			pYear -= 1;
+		}
+		return `year=${pYear}&month=${pMonth}`;
+	};
+
+	const getNextMonthUrl = () => {
+		let nMonth = parseInt(month) + 1;
+		let nYear = parseInt(year);
+		if (nMonth > 11) {
+			nMonth = 0;
+			nYear += 1;
+		}
+		return `year=${nYear}&month=${nMonth}`;
+	};
+
 	const showEditDialog = (expense) => {
 		setChosenExpenseId(expense._id);
 		setChosenExpenseDate(expense.date);
@@ -167,6 +187,7 @@ const MonhtlyOverview = ({ user }) => {
 
 		if (deleteResponse.status == "OK") {
 			fetchExpenses();
+			onExpenseDeleted();
 		}
 	};
 
@@ -223,7 +244,7 @@ const MonhtlyOverview = ({ user }) => {
 	const printDebt = () => {
 		let payedLess = matkoExpenseTotal < toniExpenseTotal ? "Matko" : "Toni";
 		let payedMore = payedLess == "Matko" ? "Toni" : "Matko";
-		let difference = Math.abs(matkoExpenseTotal - toniExpenseTotal);
+		let difference = Math.abs(matkoExpenseTotal - toniExpenseTotal) / 2;
 
 		return `${payedLess} owes ${payedMore} ${difference} kn`;
 	};
@@ -237,13 +258,11 @@ const MonhtlyOverview = ({ user }) => {
 						<span>Back to yearly expenses</span>
 					</StyledLink>
 					<div className="monthNavigation">
-						<StyledLink
-							to={`/monthly?year=${year}&month=${getPreviousMonth()}`}
-						>
+						<StyledLink to={`/monthly?${getPreviousMonthUrl()}`}>
 							<IoIosArrowRoundBack size={32} />
 							<span>{monthNames[getPreviousMonth()]}</span>
 						</StyledLink>
-						<StyledLink to={`/monthly?year=${year}&month=${getNextMonth()}`}>
+						<StyledLink to={`/monthly?${getNextMonthUrl()}`}>
 							<span>{monthNames[getNextMonth()]}</span>
 							<IoIosArrowRoundBack
 								size={32}
@@ -323,6 +342,16 @@ const ContainerHeader = styled.header`
 		display: flex;
 		column-gap: 30px;
 	}
+
+	@media (max-width: 420px) {
+		display: grid;
+		grid-row-gap: 20px;
+		grid-template-columns: 1fr;
+
+		.monthNavigation {
+			justify-content: space-between;
+		}
+	}
 `;
 
 const UserTotal = styled.p`
@@ -366,6 +395,11 @@ const ExpenseItem = styled.div`
 
 	.expenseItemAmount {
 		font-weight: 700;
+	}
+
+	@media (max-width: 420px) {
+		font-size: 0.8rem;
+		padding: 12px 8px;
 	}
 `;
 

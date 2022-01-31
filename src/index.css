@@ -2,6 +2,7 @@
 
 :root {
 	--col-accent: #1aa6d2;
+	--col-accent-dark: #0c62c5;
 	--col-primary: rgba(255, 255, 255, 0.75);
 	--col-text: #222;
 	--popup-z-index: 10;
@@ -19,8 +20,12 @@
 	color: var(--col-text);
 }
 
+html,
 body {
-	min-height: 100vh;
+	min-height: 100%;
+}
+
+body {
 	background-image: url("./images/app-background.jpg");
 	background-size: cover;
 	background-position: center center;
