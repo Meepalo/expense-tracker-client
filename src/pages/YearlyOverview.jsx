@@ -62,10 +62,10 @@ const YearlyOverview = () => {
 		}
 	}
 
-	useEffect(async () => {
+	/* useEffect(async () => {
 		console.log("Fetching from: " + yearUrl);
 		await fetchData();
-	}, []);
+	}, []); */
 
 	useEffect(async () => {
 		setSelectedYear(selectedDate.getFullYear());
