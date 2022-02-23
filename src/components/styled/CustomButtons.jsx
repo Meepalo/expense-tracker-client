@@ -2,6 +2,7 @@
 import styled from "@emotion/styled/macro";
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const primaryButtonStyle = css`
 	background: var(--col-accent);
@@ -23,6 +24,10 @@ export const SecondaryButton = styled(PrimaryButton)`
 
 export const SubmitButton = ({ value }) => {
 	return <input type="submit" value={value} css={primaryButtonStyle} />;
+};
+
+SubmitButton.propTypes = {
+	value: PropTypes.string,
 };
 
 export const StyledLink = styled(Link)`

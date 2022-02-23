@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import MainContainer from "../components/MainContainer";
 import { StyledLink } from "../components/styled/CustomButtons";
 
@@ -12,20 +12,9 @@ import TotalExpense from "../components/TotalExpense";
 import SecondaryContainer from "../components/SecondaryContainer";
 import ExpenseForm from "../components/ExpenseForm";
 
-const monthNames = [
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
-];
+import PropTypes from "prop-types";
+
+import { monthNames } from "../utils/Utils";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
@@ -75,10 +64,6 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 		if (expensesResult.status == "OK") {
 			setMonthlyTotal(expensesResult.total);
 			setExpenses(expensesResult.expenses);
-
-			console.log(expensesResult.expenses);
-		} else {
-			console.log(expensesResult);
 		}
 	};
 
@@ -324,6 +309,11 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 			</Aside>
 		</>
 	);
+};
+
+MonhtlyOverview.propTypes = {
+	user: PropTypes.string,
+	onExpenseDeleted: PropTypes.func,
 };
 
 const ContainerHeader = styled.header`

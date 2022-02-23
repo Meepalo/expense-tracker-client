@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { SecondaryButton, SubmitButton } from "./styled/CustomButtons";
 import FormGroup from "./styled/FormGroup";
+
+import PropTypes from "prop-types";
 
 const ExpenseForm = ({
 	onSubmit,
@@ -74,6 +75,15 @@ const ExpenseForm = ({
 			</FormActions>
 		</form>
 	);
+};
+
+ExpenseForm.propTypes = {
+	onSubmit: PropTypes.func,
+	onDismiss: PropTypes.func,
+	id: PropTypes.string,
+	date: PropTypes.instanceOf(Date),
+	amount: PropTypes.number,
+	description: PropTypes.string,
 };
 
 const FormActions = styled.div`

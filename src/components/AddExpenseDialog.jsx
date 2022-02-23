@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css, keyframes } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 
 import { SecondaryButton, SubmitButton } from "./styled/CustomButtons";
 import FormGroup from "./styled/FormGroup";
+
+import PropTypes from "prop-types";
 
 const url = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
@@ -15,11 +17,11 @@ const AddExpenseDialog = ({ visible, onConfirm, onDismiss }) => {
 	const [expenseDescription, setExpenseDescription] = useState("");
 
 	const [animatingAppear, setAnimatingAppear] = useState(false);
-	const [animatingDisappear, setAnimatingDisappear] = useState(false);
+	//const [animatingDisappear, setAnimatingDisappear] = useState(false);
 
 	useEffect(() => {
 		if (visible) setAnimatingAppear(true);
-		else setAnimatingDisappear(true);
+		//else setAnimatingDisappear(true);
 	}, [visible]);
 
 	const addExpense = async () => {
@@ -114,6 +116,12 @@ const AddExpenseDialog = ({ visible, onConfirm, onDismiss }) => {
 			</Dialog>
 		</Overlay>
 	);
+};
+
+AddExpenseDialog.propTypes = {
+	visible: PropTypes.bool,
+	onConfirm: PropTypes.func,
+	onDismiss: PropTypes.func,
 };
 
 const appearAnimation = keyframes`

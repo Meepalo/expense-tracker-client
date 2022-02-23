@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { useState } from "react";
 import AddExpenseDialog from "./AddExpenseDialog";
 
 import { PrimaryButton } from "./styled/CustomButtons";
+
+import PropTypes from "prop-types";
 
 const Appbar = ({ onLogout, onExpenseAdded }) => {
 	const [addExpenseDialogVisible, setAddExpenseDialogVisible] = useState(false);
@@ -29,6 +30,11 @@ const Appbar = ({ onLogout, onExpenseAdded }) => {
 			/>
 		</header>
 	);
+};
+
+Appbar.propTypes = {
+	onLogout: PropTypes.func,
+	onExpenseAdded: PropTypes.func,
 };
 
 const headerStyle = css`

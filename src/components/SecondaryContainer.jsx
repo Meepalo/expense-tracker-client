@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 
 const SecondaryContainer = ({ children }) => {
 	return <Container>{children}</Container>;
+};
+
+SecondaryContainer.propTypes = {
+	children: PropTypes.node,
 };
 
 const Container = styled.div`

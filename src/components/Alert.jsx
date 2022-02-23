@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css, keyframes } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
 import { MdCheckCircleOutline } from "react-icons/md";
+
+import PropTypes from "prop-types";
 
 const Alert = ({ visible, message, onShow, onTimeout }) => {
 	const [showing, setShowing] = useState(false);
@@ -14,7 +16,6 @@ const Alert = ({ visible, message, onShow, onTimeout }) => {
 	const duration = 5000;
 
 	useEffect(() => {
-		console.log("Alert use effect (VISIBLE) called " + Date.now());
 		if (visible) {
 			setShowing(true);
 			clearTimeout(showTimeout);
@@ -56,6 +57,13 @@ const Alert = ({ visible, message, onShow, onTimeout }) => {
 			</Container>
 		)
 	);
+};
+
+Alert.propTypes = {
+	visible: PropTypes.bool,
+	message: PropTypes.string,
+	onShow: PropTypes.func,
+	onTimeout: PropTypes.func,
 };
 
 const appearAnimation = keyframes`

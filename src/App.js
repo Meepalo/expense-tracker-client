@@ -1,5 +1,4 @@
 import {
-	BrowserRouter as Router,
 	Outlet,
 	Routes,
 	Route,
@@ -18,6 +17,8 @@ import Login from "./pages/Login";
 import { ContentWrapper } from "./components/styled/ContentWrapper";
 import Alert from "./components/Alert";
 
+import PropTypes from "prop-types";
+
 const loginUrl = `${process.env.REACT_APP_API_URL}/api/login`;
 
 function App() {
@@ -28,11 +29,9 @@ function App() {
 	const [alertMessage, setAlertMessage] = useState("");
 
 	const navigate = useNavigate();
-	const location = useLocation();
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		console.log(token);
 		if (token != null) {
 			setUserLoggedIn(true);
 			setUserEmail(jwt.decode(token).email);
@@ -124,8 +123,16 @@ const ProtectedRoute = ({ userLoggedIn }) => {
 	return userLoggedIn ? <Outlet /> : <Navigate to="/login" />;
 };
 
+ProtectedRoute.propTypes = {
+	userLoggedIn: PropTypes.bool,
+};
+
 const NotLoggedInRoute = ({ userLoggedIn }) => {
 	return userLoggedIn ? <Navigate to="/" /> : <Outlet />;
+};
+
+NotLoggedInRoute.propTypes = {
+	userLoggedIn: PropTypes.bool,
 };
 
 const ScrollToTop = () => {

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useState, forwardRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
@@ -23,7 +23,7 @@ const YearlyOverview = () => {
 
 	const navigate = useNavigate();
 
-	async function fetchData() {
+	const fetchData = async () => {
 		setIsDataFetching(true);
 		const res = await fetch(`${yearUrl}/${selectedYear}`, {
 			headers: {
@@ -36,15 +36,11 @@ const YearlyOverview = () => {
 		const expensesResponse = await res.json();
 
 		if (expensesResponse.status == "OK") {
-			console.log(expensesResponse);
-			console.log("fetched");
 			setYearlyTotal(expensesResponse.total);
 			setMonthlyTotals(expensesResponse.expenses);
 			setIsDataFetching(false);
-		} else {
-			console.log(expensesResponse);
 		}
-	}
+	};
 
 	useEffect(async () => {
 		setSelectedYear(selectedDate.getFullYear());
@@ -54,13 +50,19 @@ const YearlyOverview = () => {
 		await fetchData();
 	}, [selectedYear]);
 
-	const CustomYearInput = forwardRef(({ value, onClick }, ref) => (
-		<button css={customYearInputCSS} onClick={onClick} ref={ref}>
-			{value}
-		</button>
-	));
+	const CustomYearInput = forwardRef(function CustomYearInput(
+		// eslint-disable-next-line react/prop-types
+		{ value, onClick },
+		ref
+	) {
+		return (
+			<button css={customYearInputCSS} onClick={onClick} ref={ref}>
+				{value}
+			</button>
+		);
+	});
 
-	const navigateToMonhtlyOverview = (monthIndex) => {
+	const navigateToMonthlyOverview = (monthIndex) => {
 		navigate(`/monthly?year=${selectedYear}&month=${monthIndex}`);
 	};
 
@@ -73,6 +75,7 @@ const YearlyOverview = () => {
 					onChange={(date) => setSelectedDate(date)}
 					showYearPicker
 					dateFormat="yyyy"
+					popperContainer={"label"}
 					customInput={<CustomYearInput />}
 				/>
 				{isDataFetching ? (
@@ -87,7 +90,7 @@ const YearlyOverview = () => {
 						/>
 						<MonthlyTotals
 							totalExpenses={monthlyTotals}
-							onClick={navigateToMonhtlyOverview}
+							onClick={navigateToMonthlyOverview}
 						/>
 					</ExpensesLayout>
 				)}

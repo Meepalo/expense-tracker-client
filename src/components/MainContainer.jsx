@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 
 const MainContainer = ({ children }) => {
 	return <Main>{children}</Main>;
 };
 
-const s = styled.div``;
+MainContainer.propTypes = {
+	children: PropTypes.node,
+};
 
 const Main = styled.main`
 	width: 50%;

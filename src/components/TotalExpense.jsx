@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import PropTypes from "prop-types";
 
 const TotalExpense = ({ value, className }) => {
 	return (
@@ -9,6 +9,11 @@ const TotalExpense = ({ value, className }) => {
 			<p css={valueCSS}>{value} kn</p>
 		</div>
 	);
+};
+
+TotalExpense.propTypes = {
+	value: PropTypes.number,
+	className: PropTypes.string,
 };
 
 const containerCSS = css`
