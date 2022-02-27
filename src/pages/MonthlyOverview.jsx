@@ -1,31 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import MainContainer from "../components/MainContainer";
-import { StyledLink } from "../components/styled/CustomButtons";
 
-import { IoIosArrowRoundBack } from "react-icons/io";
-import { MdRemoveRedEye, MdEdit, MdDelete } from "react-icons/md";
 import TotalExpense from "../components/TotalExpense";
+import ExpenseItem from "../components/MonthlyOverview/ExpenseItem";
 import SecondaryContainer from "../components/SecondaryContainer";
 import ExpenseForm from "../components/ExpenseForm";
 
 import PropTypes from "prop-types";
 
-import { monthNames } from "../utils/Utils";
+import DebtBreakdown from "../components/MonthlyOverview/DebtBreakdown";
+import MonthlyOverviewHeader from "../components/MonthlyOverview/MonthlyOverviewHeader";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/expenses`;
 
 const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
-	const [month, setMonth] = useState(null);
-	const [year, setYear] = useState(null);
-
 	const [monthlyTotal, setMonthlyTotal] = useState(0);
 	const [expenses, setExpenses] = useState([]);
-	const [matkoExpenseTotal, setMatkoExpenseTotal] = useState(0);
-	const [toniExpenseTotal, setToniExpenseTotal] = useState(0);
 
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [previewDialogVisible, setPreviewDialogVisible] = useState(false);
@@ -50,9 +43,6 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 
 		if (newYear == null || newMonth == null) return;
 
-		setYear(newYear);
-		setMonth(newMonth);
-
 		const res = await fetch(`${baseUrl}/${newYear}/${newMonth}`, {
 			headers: {
 				"x-access-token": localStorage.getItem("token"),
@@ -65,51 +55,6 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 			setMonthlyTotal(expensesResult.total);
 			setExpenses(expensesResult.expenses);
 		}
-	};
-
-	useEffect(() => {
-		let matkoTotal = expenses
-			.filter((expense) => expense.user == "Matko")
-			.reduce((acc, expense) => acc + expense.amount, 0);
-
-		let toniTotal = expenses
-			.filter((expense) => expense.user == "Toni")
-			.reduce((acc, expense) => acc + expense.amount, 0);
-
-		setMatkoExpenseTotal(matkoTotal);
-		setToniExpenseTotal(toniTotal);
-	}, [expenses]);
-
-	const getPreviousMonth = () => {
-		const pMonth = parseInt(month) - 1;
-		if (pMonth < 0) return 11;
-		return pMonth;
-	};
-
-	const getNextMonth = () => {
-		const nMonth = parseInt(month) + 1;
-		if (nMonth > 11) return 0;
-		return nMonth;
-	};
-
-	const getPreviousMonthUrl = () => {
-		let pMonth = parseInt(month) - 1;
-		let pYear = parseInt(year);
-		if (pMonth < 0) {
-			pMonth = 11;
-			pYear -= 1;
-		}
-		return `year=${pYear}&month=${pMonth}`;
-	};
-
-	const getNextMonthUrl = () => {
-		let nMonth = parseInt(month) + 1;
-		let nYear = parseInt(year);
-		if (nMonth > 11) {
-			nMonth = 0;
-			nYear += 1;
-		}
-		return `year=${nYear}&month=${nMonth}`;
 	};
 
 	const showEditDialog = (expense) => {
@@ -177,103 +122,24 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 	};
 
 	const listedExpenses = expenses.map((expense) => (
-		<ExpenseItem key={expense._id}>
-			<div
-				className="expenseItemColor"
-				css={css`
-					background: ${expense.user == "Matko"
-						? "var(--col-matko-expense)"
-						: "var(--col-toni-expense)"};
-				`}
-			></div>
-			<span className="expenseItemDate">
-				{new Date(expense.date).toLocaleDateString("hr-HR")}
-			</span>
-			<span className="expenseItemUser">{expense.user}</span>
-			<span
-				className="expenseItemAmount"
-				css={css`
-					width: 100px;
-				`}
-			>
-				{expense.amount} kn
-			</span>
-			<ExpenseItemControls sameUser={user == expense.user}>
-				<button onClick={() => showPreviewDialog(expense)}>
-					<MdRemoveRedEye size={22} />
-				</button>
-				<button
-					onClick={() => {
-						if (user == expense.user) showEditDialog(expense);
-					}}
-					css={css`
-						background: ${expense.user != user ? "#BCBCBC" : ""} !important;
-					`}
-				>
-					<MdEdit size={22} />
-				</button>
-				<button
-					onClick={() => {
-						if (user == expense.user) deleteExpense(expense._id);
-					}}
-					css={css`
-						background: ${expense.user != user ? "#BCBCBC" : ""} !important;}
-					`}
-				>
-					<MdDelete size={22} />
-				</button>
-			</ExpenseItemControls>
-		</ExpenseItem>
+		<ExpenseItem
+			key={expense._id}
+			expense={expense}
+			user={user}
+			onPreview={showPreviewDialog}
+			onEdit={showEditDialog}
+			onDelete={deleteExpense}
+		/>
 	));
-
-	const printDebt = () => {
-		let payedLess = matkoExpenseTotal < toniExpenseTotal ? "Matko" : "Toni";
-		let payedMore = payedLess == "Matko" ? "Toni" : "Matko";
-		let difference = Math.abs(matkoExpenseTotal - toniExpenseTotal) / 2;
-
-		return `${payedLess} owes ${payedMore} ${difference} kn`;
-	};
 
 	return (
 		<>
 			<MainContainer>
-				<ContainerHeader>
-					<StyledLink to="/">
-						<IoIosArrowRoundBack size={32} />
-						<span>Back to yearly expenses</span>
-					</StyledLink>
-					<div className="monthNavigation">
-						<StyledLink to={`/monthly?${getPreviousMonthUrl()}`}>
-							<IoIosArrowRoundBack size={32} />
-							<span>{monthNames[getPreviousMonth()]}</span>
-						</StyledLink>
-						<StyledLink to={`/monthly?${getNextMonthUrl()}`}>
-							<span>{monthNames[getNextMonth()]}</span>
-							<IoIosArrowRoundBack
-								size={32}
-								css={css`
-									transform: rotate(180deg);
-								`}
-							/>
-						</StyledLink>
-					</div>
-				</ContainerHeader>
-				<h1>
-					{monthNames[month]} {year} expenses
-				</h1>
+				<MonthlyOverviewHeader />
+
 				<TotalExpense value={monthlyTotal} />
 
-				<UserTotal>
-					<span className="user">Matko:</span>
-					{matkoExpenseTotal} kn
-				</UserTotal>
-
-				<UserTotal>
-					<span>Toni:</span>
-					{toniExpenseTotal} kn
-				</UserTotal>
-
-				<ExpenseDifference>{printDebt()}</ExpenseDifference>
+				<DebtBreakdown expenses={expenses} />
 
 				<ExpensesContainer>
 					{listedExpenses.length > 0 ? (
@@ -316,96 +182,11 @@ MonhtlyOverview.propTypes = {
 	onExpenseDeleted: PropTypes.func,
 };
 
-const ContainerHeader = styled.header`
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 40px;
-
-	${StyledLink} {
-		font-size: 0.85rem;
-		display: flex;
-		align-items: center;
-		font-weight: 900;
-	}
-
-	.monthNavigation {
-		display: flex;
-		column-gap: 30px;
-	}
-
-	@media (max-width: 420px) {
-		display: grid;
-		grid-row-gap: 20px;
-		grid-template-columns: 1fr;
-
-		.monthNavigation {
-			justify-content: space-between;
-		}
-	}
-`;
-
-const UserTotal = styled.p`
-	margin: 10px 0;
-
-	span {
-		margin-right: 16px;
-	}
-
-	&:not(.user) {
-		font-weight: bold;
-	}
-`;
-
-const ExpenseDifference = styled.p`
-	margin: 10px 0;
-`;
-
 const ExpensesContainer = styled.main`
 	display: flex;
 	flex-direction: column;
 	row-gap: 10px;
 	margin-top: 60px;
-`;
-
-const ExpenseItem = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	padding: 12px 24px;
-	background: var(--col-primary);
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-	.expenseItemColor {
-		width: 24px;
-		height: 24px;
-		border-radius: 100px;
-	}
-
-	.expenseItemAmount {
-		font-weight: 700;
-	}
-
-	@media (max-width: 420px) {
-		font-size: 0.8rem;
-		padding: 12px 8px;
-	}
-`;
-
-const ExpenseItemControls = styled.div`
-	display: flex;
-	column-gap: 10px;
-
-	button {
-		width: 32px;
-		height: 32px;
-		border-radius: 100px;
-		background: #fff;
-		box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-		display: grid;
-		place-items: center;
-	}
 `;
 
 const Aside = styled.div`

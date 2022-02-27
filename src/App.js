@@ -1,14 +1,8 @@
-import {
-	Outlet,
-	Routes,
-	Route,
-	Navigate,
-	useNavigate,
-	useLocation,
-} from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
 
+import { ProtectedRoute, NotLoggedInRoute } from "./components/routes/Routes";
 import Appbar from "./components/Appbar";
 import { PageWrapper } from "./components/styled/PageWrapper";
 import MonhtlyOverview from "./pages/MonthlyOverview";
@@ -16,8 +10,6 @@ import YearlyOverview from "./pages/YearlyOverview";
 import Login from "./pages/Login";
 import { ContentWrapper } from "./components/styled/ContentWrapper";
 import Alert from "./components/Alert";
-
-import PropTypes from "prop-types";
 
 const loginUrl = `${process.env.REACT_APP_API_URL}/api/login`;
 
@@ -78,7 +70,6 @@ function App() {
 				onLogout={logoutUser}
 				onExpenseAdded={() => showAlert("Expense added successfully")}
 			/>
-			<button onClick={() => showAlert("My message")}>Show alert</button>
 			<ScrollToTop />
 			<ContentWrapper>
 				<Routes>
@@ -118,22 +109,6 @@ function App() {
 		</PageWrapper>
 	);
 }
-
-const ProtectedRoute = ({ userLoggedIn }) => {
-	return userLoggedIn ? <Outlet /> : <Navigate to="/login" />;
-};
-
-ProtectedRoute.propTypes = {
-	userLoggedIn: PropTypes.bool,
-};
-
-const NotLoggedInRoute = ({ userLoggedIn }) => {
-	return userLoggedIn ? <Navigate to="/" /> : <Outlet />;
-};
-
-NotLoggedInRoute.propTypes = {
-	userLoggedIn: PropTypes.bool,
-};
 
 const ScrollToTop = () => {
 	const { pathname } = useLocation();
