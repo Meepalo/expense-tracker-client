@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const primaryButtonStyle = css`
-	background: var(--col-accent);
+	background: var(--col-accent-dark);
 	font-weight: 800;
 	color: #fff;
-	padding: 0.5em 1.5em;
-	border-radius: 5px;
+	padding: 1em 1.5em;
+	border-radius: 0.2em;
 	cursor: pointer;
+	text-transform: uppercase;
 `;
 
 export const PrimaryButton = styled.button`
@@ -18,8 +19,9 @@ export const PrimaryButton = styled.button`
 `;
 
 export const SecondaryButton = styled(PrimaryButton)`
-	background: var(--col-primary);
+	background: transparent;
 	color: var(--col-text);
+	font-weight: 700;
 `;
 
 export const SubmitButton = ({ value }) => {

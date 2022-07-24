@@ -61,7 +61,7 @@ const AddExpenseDialog = ({ visible, onConfirm, onDismiss }) => {
 		>
 			<Dialog>
 				<CloseButton onClick={() => onDismiss()} />
-				<h1>Add new expense</h1>
+				<h2>Add new expense</h2>
 				<div className="dialog-content">
 					<form
 						onSubmit={(e) => {
@@ -106,10 +106,10 @@ const AddExpenseDialog = ({ visible, onConfirm, onDismiss }) => {
 							</FormGroup>
 						</div>
 						<DialogActions>
+							<SubmitButton value="Add expense" />
 							<SecondaryButton onClick={() => onDismiss()}>
 								Cancel
 							</SecondaryButton>
-							<SubmitButton value="Add expense" />
 						</DialogActions>
 					</form>
 				</div>
@@ -149,22 +149,17 @@ const Overlay = styled.div`
 `;
 
 const Dialog = styled.div`
+	width: 90%;
 	position: absolute;
-	padding: 40px;
-	border-radius: 30px;
-	background: var(--col-primary);
+	padding: 40px 20px 20px;
+	border-radius: 0.5em;
+	background: #fff;
 
 	.dialog-content {
 		margin: 40px 0px 0 0;
 	}
 
-	.form-main {
-		padding-right: 260px;
-	}
-
 	@media (max-width: 420px) {
-		border-radius: 15px;
-
 		.form-main {
 			padding-right: 0px;
 
@@ -178,9 +173,14 @@ const Dialog = styled.div`
 const DialogActions = styled.div`
 	width: 100%;
 	display: flex;
+	flex-direction: column;
 	justify-content: flex-end;
-	column-gap: 20px;
+	row-gap: 10px;
 	margin-top: 60px;
+
+	button {
+		width: 100%;
+	}
 `;
 
 const CloseButton = styled(GrFormClose)`

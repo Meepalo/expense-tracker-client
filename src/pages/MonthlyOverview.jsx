@@ -6,7 +6,7 @@ import MainContainer from "../components/MainContainer";
 
 import TotalExpense from "../components/TotalExpense";
 import ExpenseItem from "../components/MonthlyOverview/ExpenseItem";
-import SecondaryContainer from "../components/SecondaryContainer";
+import SecondaryContainerDesktop from "../components/SecondaryContainerDesktop";
 import ExpenseForm from "../components/ExpenseForm";
 
 import PropTypes from "prop-types";
@@ -153,7 +153,7 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 			<Aside>
 				{/* Edit dialog */}
 				{editDialogVisible && (
-					<SecondaryContainer>
+					<SecondaryContainerDesktop>
 						<h2>Edit</h2>
 						<ExpenseForm
 							onDismiss={() => closeDialogs()}
@@ -163,14 +163,14 @@ const MonhtlyOverview = ({ user, onExpenseDeleted }) => {
 							amount={chosenExpenseAmount}
 							description={chosenExpenseDescription}
 						/>
-					</SecondaryContainer>
+					</SecondaryContainerDesktop>
 				)}
 
 				{/* Preview dialog */}
 				{previewDialogVisible && (
-					<SecondaryContainer>
+					<SecondaryContainerDesktop>
 						<h2>Preview</h2>
-					</SecondaryContainer>
+					</SecondaryContainerDesktop>
 				)}
 			</Aside>
 		</>

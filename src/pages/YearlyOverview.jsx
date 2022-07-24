@@ -69,7 +69,7 @@ const YearlyOverview = () => {
 	return (
 		<>
 			<MainContainer>
-				<h1>Yearly expenses</h1>
+				<h1 css={{ marginTop: "20px" }}>Yearly expenses</h1>
 				<DatePicker
 					selected={selectedDate}
 					onChange={(date) => setSelectedDate(date)}
@@ -82,12 +82,7 @@ const YearlyOverview = () => {
 					<LoadingAnimation />
 				) : (
 					<ExpensesLayout>
-						<TotalExpense
-							css={css`
-								grid-column: 1 / span 2;
-							`}
-							value={yearlyTotal}
-						/>
+						<TotalExpense value={yearlyTotal} />
 						<MonthlyTotals
 							totalExpenses={monthlyTotals}
 							onClick={navigateToMonthlyOverview}
@@ -101,18 +96,17 @@ const YearlyOverview = () => {
 
 const customYearInputCSS = css`
 	padding: 5px 15px;
-	border-radius: 100px;
-	font-size: 1.4rem;
+	border-radius: 0.2em;
+	font-size: 1.3rem;
 	font-weight: 900;
 	width: fit-content;
-	background: var(--col-primary);
 	margin: 10px 0;
 	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
 `;
 
 const ExpensesLayout = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	grid-row-gap: 40px;
 	grid-column-gap: 40px;
 `;

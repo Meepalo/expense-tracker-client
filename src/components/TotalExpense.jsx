@@ -6,7 +6,7 @@ const TotalExpense = ({ value, className }) => {
 	return (
 		<div className={className} css={containerCSS}>
 			<p css={titleCSS}>Total</p>
-			<p css={valueCSS}>{value} kn</p>
+			<p css={valueCSS}>{value.toFixed(2)} kn</p>
 		</div>
 	);
 };
@@ -21,20 +21,19 @@ const containerCSS = css`
 `;
 
 const titleCSS = css`
-	transform: translateX(10px);
 	font-weight: 900;
 	margin-bottom: 10px;
+	font-size: 0.9rem;
 `;
 
 const valueCSS = css`
 	padding: 10px;
 	width: 100%;
 	text-align: center;
-	background: var(--col-primary);
-	border-radius: 100px;
-	font-size: 1.4rem;
+	border-radius: 0.2em;
+	font-size: 1.1rem;
 	font-weight: 800;
-	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+	border: 3px solid var(--col-accent);
 `;
 
 export default TotalExpense;
